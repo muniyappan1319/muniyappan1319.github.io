@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Azure AI Assistant</title>
+
+    <link rel="stylesheet" href="chatbot.css">
+</head>
+
+<body>
+
+    <div class="chatbot-container">
+
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="bot-avatar">☁️</div>
+
+            <div class="bot-info">
+                <h2>Azure AI Assistant</h2>
+                <span>● Online</span>
+            </div>
+        </div>
+
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatMessages">
+
+            <div class="message bot-message">
+                <div class="message-avatar">🤖</div>
+
+                <div class="message-content">
+                    Hi! 👋 I'm Muniyappan's Azure Assistant.
+                    <br><br>
+                    Ask me anything about Azure, DevOps, Terraform,
+                    Docker, Kubernetes, AKS and cloud technologies.
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- Quick Questions -->
+        <div class="quick-questions">
+
+            <button onclick="askQuestion('What is Azure VM?')">
+                Azure VM
+            </button>
+
+            <button onclick="askQuestion('What is Azure VNet?')">
+                Azure VNet
+            </button>
+
+            <button onclick="askQuestion('What is AKS?')">
+                AKS
+            </button>
+
+            <button onclick="askQuestion('What is Terraform?')">
+                Terraform
+            </button>
+
+        </div>
+
+
+        <!-- Input -->
+        <div class="chat-input-area">
+
+            <input
+                type="text"
+                id="userInput"
+                placeholder="Ask an Azure question..."
+                autocomplete="off"
+            >
+
+            <button id="sendButton" onclick="sendMessage()">
+                ➤
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="chatbot.js"></script>
+
+</body>
+</html>
