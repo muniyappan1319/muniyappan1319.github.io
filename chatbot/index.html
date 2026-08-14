@@ -1,87 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Muniyappan's AI Representative</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+    body { background-color: #f8f9fa; height: 100vh; display: flex; flex-direction: column; }
+    
+    .header { background: #0078d4; color: white; padding: 12px 15px; display: flex; align-items: center; gap: 10px; }
+    .header-img { width: 35px; height: 35px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0078d4; font-weight: bold; }
+    .header-title { font-size: 14px; font-weight: bold; }
+    .header-status { font-size: 11px; opacity: 0.9; }
 
-    <title>Azure AI Assistant</title>
+    .chat-body { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f4f6f8; }
+    .msg { max-width: 85%; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; word-wrap: break-word; }
+    .bot-msg { background: white; color: #333; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .user-msg { background: #0078d4; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
 
-    <link rel="stylesheet" href="chatbot.css">
+    .quick-btns { display: flex; gap: 6px; overflow-x: auto; padding: 6px 12px; background: #fff; border-top: 1px solid #eee; }
+    .q-btn { background: #eef5fc; color: #0078d4; border: 1px solid #cce4f7; padding: 6px 10px; border-radius: 15px; font-size: 11px; white-space: nowrap; cursor: pointer; font-weight: 600; }
+    .q-btn:hover { background: #0078d4; color: white; }
+
+    .input-box { display: flex; padding: 10px; background: white; border-top: 1px solid #ddd; }
+    .input-box input { flex: 1; border: 1px solid #ccc; padding: 8px 12px; border-radius: 20px; outline: none; font-size: 12px; }
+    .input-box button { background: #0078d4; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; margin-left: 6px; cursor: pointer; }
+  </style>
 </head>
-
 <body>
 
-    <div class="chatbot-container">
-
-        <!-- Header -->
-        <div class="chat-header">
-            <div class="bot-avatar">☁️</div>
-
-            <div class="bot-info">
-                <h2>Azure AI Assistant</h2>
-                <span>● Online</span>
-            </div>
-        </div>
-
-
-        <!-- Chat Messages -->
-        <div class="chat-messages" id="chatMessages">
-
-            <div class="message bot-message">
-                <div class="message-avatar">🤖</div>
-
-                <div class="message-content">
-                    Hi! 👋 I'm Muniyappan's Azure Assistant.
-                    <br><br>
-                    Ask me anything about Azure, DevOps, Terraform,
-                    Docker, Kubernetes, AKS and cloud technologies.
-                </div>
-            </div>
-
-        </div>
-
-
-        <!-- Quick Questions -->
-        <div class="quick-questions">
-
-            <button onclick="askQuestion('What is Azure VM?')">
-                Azure VM
-            </button>
-
-            <button onclick="askQuestion('What is Azure VNet?')">
-                Azure VNet
-            </button>
-
-            <button onclick="askQuestion('What is AKS?')">
-                AKS
-            </button>
-
-            <button onclick="askQuestion('What is Terraform?')">
-                Terraform
-            </button>
-
-        </div>
-
-
-        <!-- Input -->
-        <div class="chat-input-area">
-
-            <input
-                type="text"
-                id="userInput"
-                placeholder="Ask an Azure question..."
-                autocomplete="off"
-            >
-
-            <button id="sendButton" onclick="sendMessage()">
-                ➤
-            </button>
-
-        </div>
-
+  <div class="header">
+    <div class="header-img"><i class="fas fa-user-tie"></i></div>
+    <div>
+      <div class="header-title">Muniyappan's AI Representative</div>
+      <div class="header-status">🟢 Online | Ask about Profile & Resume</div>
     </div>
+  </div>
 
-    <script src="chatbot.js"></script>
+  <div class="chat-body" id="chatBody">
+    <div class="msg bot-msg">
+      Hi! 👋 I'm Muniyappan's Personal Portfolio AI Assistant.<br><br>
+      I can help you with his <b>4+ years Azure Cloud experience</b>, <b>AZ-104 Certification</b>, <b>Tech Stack</b>, or <b>Contact details</b>!
+    </div>
+  </div>
 
+  <div class="quick-btns">
+    <button class="q-btn" onclick="sendQuick('Tell me about Muniyappan\'s experience')">💼 Experience</button>
+    <button class="q-btn" onclick="sendQuick('What are his key skills?')">🛠️ Tech Skills</button>
+    <button class="q-btn" onclick="sendQuick('Show top projects')">🚀 Projects</button>
+    <button class="q-btn" onclick="sendQuick('How to contact Muniyappan?')">📞 Contact Info</button>
+  </div>
+
+  <div class="input-box">
+    <input type="text" id="userInput" placeholder="Ask about Muniyappan's resume..." onkeypress="if(event.key === 'Enter') sendMsg()">
+    <button onclick="sendMsg()"><i class="fas fa-paper-plane"></i></button>
+  </div>
+
+  <script>
+    const SYSTEM_PROMPT = `
+    You are the official AI Portfolio Representative for Muniyappan Ayyanar.
+    Your sole focus is to answer recruiters, hiring managers, and clients about Muniyappan's career and resume.
+
+    Candidate Information:
+    - Full Name: Muniyappan Ayyanar
+    - Title: Azure Cloud Engineer | AZ-104 Certified
+    - Experience: 4 years of experience in Cloud Operations, IaC, DevOps, and Identity Management.
+    - Work History:
+      * System Engineer at Infosys (Nov 2024 - Present): Automated Azure provisioning using Terraform/ARM (cut 50% manual effort), Managed Entra ID for 500+ users, Log Analytics/KQL dashboards, AKS microservices deployment with ArgoCD.
+      * System Administrator at Wipro Ltd / AKAL Info Systems (Apr 2022 - Nov 2024): Administered Entra ID for 1000+ users, Hybrid AD Sync, Intune endpoint compliance, reduced audit findings by 40%.
+    - Key Skills: Azure VMs, VNets, Entra ID, RBAC, Terraform, Bicep, ARM, AKS, Docker, Azure DevOps, ArgoCD, GitHub Actions, KQL, PowerShell, Python, ServiceNow.
+    - Certifications: AZ-104 (Azure Administrator Associate), AZ-900 (Azure Fundamentals).
+    - Education: B.E. in Electronics & Communication Engineering (Anna University, 2021).
+    - Contact: Email: muniyappan022000@gmail.com | Phone: +91-9786060384 | Bengaluru, India
+    - Profiles: LinkedIn: linkedin.com/in/muniyappan-a-4937b8201 | GitHub: github.com/muniyappan1319
+
+    Instructions:
+    - Only answer about Muniyappan's background, technical capabilities, certifications, and project experience.
+    - Keep answers professional, crisp, and recruiter-friendly.
+    `;
+
+    // Static fallback answers for quick buttons (instant response)
+    const QUICK_ANSWERS = {
+      "Tell me about Muniyappan's experience": "Muniyappan is an **AZ-104 Certified Azure Cloud Engineer** with **4 years of experience**.\n\n• **Infosys** (Nov 2024 - Present): Azure Cloud Operations, IaC (Terraform/ARM), AKS, ArgoCD & Log Analytics.\n• **Wipro Ltd** (Apr 2022 - Nov 2024): Cloud & Identity Ops (Entra ID for 1000+ users, Hybrid AD Sync & Intune).",
+      "What are his key skills?": "Here are Muniyappan's core technical competencies:\n\n• **Cloud & Infra:** Azure VMs, VNet, Load Balancers, Storage, AWS/GCP basics.\n• **Security & IAM:** Entra ID, RBAC, Conditional Access, MFA.\n• **IaC & DevOps:** Terraform, Bicep, ARM, Docker, AKS, Azure DevOps, ArgoCD, GitHub Actions.\n• **Scripting & Monitoring:** PowerShell, Python, KQL, Log Analytics, Azure Monitor.",
+      "Show top projects": "Key Projects by Muniyappan:\n\n1. **AKS Microservices Voting App:** Built CI/CD pipelines in Azure DevOps (YAML) + GitOps with ArgoCD.\n2. **On-Prem AD to Entra ID Migration:** Migrated 5,000+ users with Azure AD Connect & DR planning.\n3. **Enterprise Azure Automation:** Automated VM/VNet provisioning via Terraform (reduced 50% effort).",
+      "How to contact Muniyappan?": "You can reach out to Muniyappan directly:\n\n📧 **Email:** muniyappan022000@gmail.com\n📞 **Phone:** +91-9786060384\n📍 **Location:** Bengaluru, India\n🔗 **LinkedIn:** linkedin.com/in/muniyappan-a-4937b8201"
+    };
+
+    function sendQuick(text) {
+      appendMsg(text, 'user-msg');
+      if (QUICK_ANSWERS[text]) {
+        setTimeout(() => appendMsg(QUICK_ANSWERS[text].replace(/\n/g, '<br>'), 'bot-msg'), 300);
+      } else {
+        fetchAI(text);
+      }
+    }
+
+    function sendMsg() {
+      const input = document.getElementById('userInput');
+      const val = input.value.trim();
+      if (!val) return;
+      
+      appendMsg(val, 'user-msg');
+      input.value = '';
+
+      if (QUICK_ANSWERS[val]) {
+        appendMsg(QUICK_ANSWERS[val].replace(/\n/g, '<br>'), 'bot-msg');
+      } else {
+        // Fallback or generic AI reply
+        setTimeout(() => {
+          appendMsg(`Thanks for reaching out! For detailed inquiries about Muniyappan's profile, feel free to email him at <b>muniyappan022000@gmail.com</b> or call <b>+91-9786060384</b>.`, 'bot-msg');
+        }, 500);
+      }
+    }
+
+    function appendMsg(html, className) {
+      const body = document.getElementById('chatBody');
+      const div = document.createElement('div');
+      div.className = `msg ${className}`;
+      div.innerHTML = html;
+      body.appendChild(div);
+      body.scrollTop = body.scrollHeight;
+    }
+  </script>
 </body>
 </html>
